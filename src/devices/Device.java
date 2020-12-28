@@ -1,3 +1,7 @@
+package devices;
+
+import sources.Order;
+
 public class Device {
     private int deviceNumber;
     private double workingTime;

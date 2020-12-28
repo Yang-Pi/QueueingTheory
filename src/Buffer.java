@@ -1,3 +1,5 @@
+import sources.Order;
+
 public class Buffer {
     private int bufferSize;
     private Order[] ringArray;

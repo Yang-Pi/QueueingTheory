@@ -1,16 +1,14 @@
-import java.awt.*;
-import java.awt.event.KeyEvent;
+import devices.DevicesManager;
+import sources.SourcesManager;
+
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.CountDownLatch;
 
 public class QueueingTheorySystem {
     private SourcesManager sourcesManager;
     private DevicesManager devicesManager;
     private double systemTime;
     QueueingTheorySystem() throws Exception {
-        System.out.println("!!!!");
-
         int sourcesCount = 5;
         int deviceCount = 6;
         int bufferSize = 10;
@@ -72,12 +70,12 @@ public class QueueingTheorySystem {
         System.out.println("--------- ORDERS COUNT: ");
         for (int i = 0; i < sourceCount; ++i) {
             List<Integer> tmpList = sourcesManager.getSourceOrdersCountInfo(i);
-            System.out.println("Source #" + i + " created all " + tmpList.get(0) + " orders which canceled " + tmpList.get(1));
+            System.out.println("sources.Source #" + i + " created all " + tmpList.get(0) + " orders which canceled " + tmpList.get(1));
             System.out.println("Probability of cancel: " + (double)tmpList.get(1) / (double)tmpList.get(0));
         }
         System.out.println("--------- AVG TIMES:");
         for (int i = 0; i < sourceCount; ++i) {
-            System.out.println("--- Source #" + i);
+            System.out.println("--- sources.Source #" + i);
             System.out.println("avg time in system " + sourcesManager.getSourceAvgTimeInSystem(i));
             System.out.println("avg waiting time " + sourcesManager.getSourceAvgWaitingTime(i));
             System.out.println("dispersion " + sourcesManager.computeSourceWaitingTimeDispersion(i));
@@ -86,7 +84,7 @@ public class QueueingTheorySystem {
         }
         System.out.println("--------- DEVICE USING");
         for (int i = 0; i < deviceCount; ++i) {
-            System.out.println("Device #" + i + " " + devicesManager.getDeviceUsing(i, systemTime));
+            System.out.println("devices.Device #" + i + " " + devicesManager.getDeviceUsing(i, systemTime));
         }
     }
 }

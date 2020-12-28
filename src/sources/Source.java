@@ -1,3 +1,7 @@
+package sources;
+
+import utils.PoissonGenerator;
+
 import java.util.ArrayList;
 import java.util.List;
 

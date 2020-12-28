@@ -1,3 +1,5 @@
+package sources;
+
 public class Order {
     private int priority;
     private double timeStart;

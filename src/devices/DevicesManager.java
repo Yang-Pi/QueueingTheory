@@ -1,3 +1,8 @@
+package devices;
+
+import sources.Order;
+import utils.PoissonGenerator;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +41,7 @@ public class DevicesManager {
     public void printEventCalendar(double currentTime) {
         System.out.println("----- DEVICE CLOSEST EVENTS: ");
         for (Device device : deviceList) {
-            System.out.print("Source #" + device.getDeviceNumber() + " future order time " + device.getTimeEnd());
+            System.out.print("Device #" + device.getDeviceNumber() + " end work at " + device.getTimeEnd());
             if (device.getTimeEnd() > currentTime) {
                 System.out.println(" ACTIVE");
             }
@@ -60,4 +65,5 @@ public class DevicesManager {
         }
         return false;
     }
+
 }
