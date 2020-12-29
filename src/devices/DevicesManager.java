@@ -9,11 +9,9 @@ import java.util.List;
 public class DevicesManager {
     private int devicesCount;
     private List<Device> deviceList = new ArrayList<>();
-    private int readyDeviceNum;
 
     public DevicesManager(int devicesCount) {
         this.devicesCount = devicesCount;
-        readyDeviceNum = devicesCount - 1;
         for (int i = 0; i < devicesCount; ++i) {
             //TODO: input working time
             deviceList.add(new Device(i, 0.3 + PoissonGenerator.generateNum(3)));
@@ -21,12 +19,10 @@ public class DevicesManager {
     }
 
     public double getMinTime() {
-        double minTime = deviceList.get(0).getTimeEnd();
-        readyDeviceNum = 0;
-        for (int i = 1; i < devicesCount; ++i) {
-            if (minTime >= deviceList.get(i).getTimeEnd()) {
+        double minTime = deviceList.get(devicesCount - 1).getTimeEnd();
+        for (int i = 0; i < devicesCount - 1; ++i) {
+            if (minTime > deviceList.get(i).getTimeEnd()) {
                 minTime = deviceList.get(i).getTimeEnd();
-                readyDeviceNum = i;
             }
         }
 
@@ -35,7 +31,12 @@ public class DevicesManager {
 
     public void setOrderToDevice(Order order, double currentTime) {
         order.setTimeService(currentTime);
-        deviceList.get(readyDeviceNum).setOrder(order, currentTime);
+        for (int i = devicesCount - 1; i >= 0; --i) {
+            if (deviceList.get(i).getTimeEnd() <= currentTime) {
+                deviceList.get(i).setOrder(order, currentTime);
+                break;
+            }
+        }
     }
 
     public void printEventCalendar(double currentTime) {
@@ -52,7 +53,13 @@ public class DevicesManager {
         System.out.println("-----");
     }
 
-    public double getDeviceUsing(int deviceNum, double fullTime) throws Exception {
+    public double getDeviceUsing(int deviceNum) throws Exception {
+        double fullTime = 0.;
+        for (Device device : deviceList) {
+            if (device.getTimeEnd() > fullTime) {
+                fullTime = device.getTimeEnd();
+            }
+        }
         if (isValidDeviceNum(deviceNum)) {
             return deviceList.get(deviceNum).computeDeviceUsing(fullTime);
         }
@@ -64,6 +71,14 @@ public class DevicesManager {
             return true;
         }
         return false;
+    }
+
+    public void printdevicesWorkingTime() {
+        System.out.println("--------- DEVICES WORKING TIME");
+        for (int i = 0; i < devicesCount; ++i) {
+            System.out.println("Device #" + i + " has working time " + deviceList.get(i).getWorkingTime());
+        }
+        System.out.println("---------");
     }
 
 }

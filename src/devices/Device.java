@@ -20,7 +20,7 @@ public class Device {
         timeEnd = currentTime + workingTime;
         ordersCount++;
         order.setTimeEnd(currentTime + workingTime);
-        System.out.println("DEVICE " + deviceNumber + " set order " + order.getPriority() + " " + timeEnd);
+        System.out.println("DEVICE " + deviceNumber + " set order " + order.getPriority() + " at "+ currentTime + ", finish " + timeEnd);
     }
 
     public int getDeviceNumber() {

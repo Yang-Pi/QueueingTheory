@@ -21,28 +21,27 @@ public class QueueingTheorySystem {
 
         boolean autoMode = false;
 
-        while (ordersCount != fullOrdersCount || (ordersCount == fullOrdersCount && !buffer.isEmpty())) {
+        while (ordersCount < fullOrdersCount || (ordersCount == fullOrdersCount && !buffer.isEmpty())) {
         //(ordersCount == fullOrdersCount && !buffer.isEmpty()) - special condition to clear buffer after all sources were stopped
             double sourceMinTime = sourcesManager.getMinTime();
             double deviceMinTime = devicesManager.getMinTime();
 
             if (deviceMinTime < sourceMinTime && buffer.isEmpty()) { //special condition for start of simulation
+                //Print intermediate information
                 deviceMinTime = sourceMinTime;
             }
-            if (sourceMinTime <= deviceMinTime && ordersCount != fullOrdersCount) {
+            if (sourceMinTime <= deviceMinTime && ordersCount < fullOrdersCount) {
                 buffer.setOrder(sourcesManager.createOrder());
                 ++ordersCount;
             }
             if (deviceMinTime <= sourceMinTime || (ordersCount == fullOrdersCount && !buffer.isEmpty())) {
                 try {
-                    devicesManager.setOrderToDevice(buffer.getOrder(), sourceMinTime);
+                    devicesManager.setOrderToDevice(buffer.getOrder(), deviceMinTime);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                     continue;
                 }
             }
-
-            systemTime = sourceMinTime < deviceMinTime ? sourceMinTime : deviceMinTime;
 
             //Print intermediate information
             if (!autoMode) {
@@ -62,6 +61,7 @@ public class QueueingTheorySystem {
                 }
             }
         }
+        buffer.print();
         System.out.println("\n############### RESULTS");
         printStatistics(sourcesCount, deviceCount);
     }
@@ -73,6 +73,9 @@ public class QueueingTheorySystem {
             System.out.println("sources.Source #" + i + " created all " + tmpList.get(0) + " orders which canceled " + tmpList.get(1));
             System.out.println("Probability of cancel: " + (double)tmpList.get(1) / (double)tmpList.get(0));
         }
+        System.out.println();
+        devicesManager.printdevicesWorkingTime();
+        System.out.println();
         System.out.println("--------- AVG TIMES:");
         for (int i = 0; i < sourceCount; ++i) {
             System.out.println("--- sources.Source #" + i);
@@ -81,10 +84,11 @@ public class QueueingTheorySystem {
             System.out.println("dispersion " + sourcesManager.computeSourceWaitingTimeDispersion(i));
             System.out.println("avg service time " + sourcesManager.getSourceAvgServiceTime(i));
             System.out.println("dispersion " + sourcesManager.computeSourceServiceTimeDispersion(i));
+            System.out.println();
         }
         System.out.println("--------- DEVICE USING");
         for (int i = 0; i < deviceCount; ++i) {
-            System.out.println("devices.Device #" + i + " " + devicesManager.getDeviceUsing(i, systemTime));
+            System.out.println("devices.Device #" + i + " " + devicesManager.getDeviceUsing(i));
         }
     }
 }
